@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.obiscr.chatgpt.settings.EasyCodeState">
+    <option name="projectFiles" value="$PROJECT_DIR$/springh2/src/main/java/com/springh2/controller/ProductController.java;D:/JAVA PROJECTS/springh2/springh2/src/main/java/com/springh2/model/Product.java;D:/JAVA PROJECTS/springh2/springh2/src/main/java/com/springh2/repository/ProductRepo.java;D:/JAVA PROJECTS/springh2/springh2/src/main/java/com/springh2/service/ProductService.java;D:/JAVA PROJECTS/springh2/springh2/src/main/java/com/springh2/Springh2Application.java;D:/JAVA PROJECTS/springh2/springh2/src/test/java/com/springh2/Springh2ApplicationTests.java" />
+  </component>
+</project>

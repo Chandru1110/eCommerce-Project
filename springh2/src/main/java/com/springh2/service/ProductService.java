@@ -1,6 +1,7 @@
 package com.springh2.service;
 
 
+import com.springh2.exception.ProductNotFoundException;
 import com.springh2.model.Product;
 import com.springh2.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,10 @@ public class ProductService {
         return repo.findAll();
     }
 
-    public Product getProductById(int id) {
+    public Product getProductById(int id) throws ProductNotFoundException {
 
-        return repo.findById(id).orElse(new Product());
+        return repo.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found for id : " + id));
 
 
     }
@@ -37,9 +39,9 @@ public class ProductService {
     }
 
     @Transactional
-    public void update(Product product) {
+    public void update(Product product) throws ProductNotFoundException {
         Product existingProduct = repo.findById(product.getId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found for id : " + product.getId()));
         existingProduct.setProduct(product.getProduct());
         existingProduct.setRate(product.getRate());
         // Don't manually set version, Hibernate handles it
