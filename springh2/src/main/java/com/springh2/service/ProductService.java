@@ -3,7 +3,7 @@ package com.springh2.service;
 
 import com.springh2.exception.ProductNotFoundException;
 import com.springh2.model.Product;
-import com.springh2.repository.ProductRepo;
+import com.springh2.repository.test.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +34,9 @@ public class ProductService {
 
     @Transactional
     public void updateNew(Product p) {
+       // p.setId(findLowestAvailableId());
         repo.save(p);
+
 
     }
 
@@ -55,4 +57,23 @@ public class ProductService {
     public void delete(int id) {
         repo.deleteById(id);
     }
+
+    private int findLowestAvailableId() {
+        List<Product> allProducts = repo.findAll();
+        boolean[] idExists = new boolean[allProducts.size() + 2];
+
+        for (Product product : allProducts) {
+            if (product.getId() <= allProducts.size()) {
+                idExists[product.getId()] = true;
+            }
+        }
+
+        for (int i = 1; i < idExists.length; i++) {
+            if (!idExists[i]) {
+                return i; // Return the first missing ID
+            }
+        }
+        return allProducts.size() + 1; // If no gaps, return next ID
+    }
+
 }

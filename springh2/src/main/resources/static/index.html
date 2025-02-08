@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+        }
+        button {
+            margin: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>Product Management</h1>
+
+<h2>Add / Update Product</h2>
+<form id="productForm">
+    <input type="hidden" id="productId">
+    <input type="text" id="productName" placeholder="Product Name" required>
+    <input type="number" id="productRate" placeholder="Rate" required>
+    <button type="submit">Save Product</button>
+</form>
+
+<h2>Search Products</h2>
+<input type="text" id="searchInput" placeholder="Search by name">
+<button onclick="searchProducts()">Search</button>
+
+<h2>Product List</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Rate</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="productTable"></tbody>
+</table>
+
+<script>
+    const apiUrl = "/product";
+
+    // Fetch all products
+    function fetchProducts() {
+        fetch(apiUrl + "/all")
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById("productTable");
+                table.innerHTML = "";
+                data.forEach(product => {
+                    console.log("Product Data:", product);  // Debugging: Check JSON structure
+                    table.innerHTML += `
+                        <tr>
+                            <td>${product.id}</td>
+                            <td>${product.product || "N/A"}</td>
+                            <td>${product.rate !== undefined ? product.rate : "N/A"}</td>
+                            <td>
+                                <button onclick="editProduct(${product.id}, '${product.product}', ${product.rate})">Edit</button>
+                                <button onclick="deleteProduct(${product.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(error => console.error("Error fetching products:", error));
+    }
+
+    // Add / Update product
+    document.getElementById("productForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const id = document.getElementById("productId").value;
+        const product = document.getElementById("productName").value;
+        const rate = document.getElementById("productRate").value;
+
+        const newProduct = { id: id ? parseInt(id) : null, product, rate };
+        const method = id ? "PUT" : "POST";
+        const endpoint = id ? apiUrl + "/update" : apiUrl + "/post";
+
+        fetch(endpoint, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newProduct)
+        }).then(() => {
+            document.getElementById("productForm").reset();
+            fetchProducts();
+        });
+    });
+
+    // Delete product
+    function deleteProduct(id) {
+        fetch(apiUrl + "/" + id, { method: "DELETE" }).then(() => fetchProducts());
+    }
+
+    // Edit product (Prefill form)
+    function editProduct(id, product, rate) {
+        document.getElementById("productId").value = id;
+        document.getElementById("productName").value = product;
+        document.getElementById("productRate").value = rate;
+    }
+
+    // Search products
+    function searchProducts() {
+        const keyword = document.getElementById("searchInput").value;
+        fetch(apiUrl + "/search?Keyword=" + keyword)
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById("productTable");
+                table.innerHTML = "";
+                data.forEach(product => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${product.id}</td>
+                            <td>${product.product || "N/A"}</td>
+                            <td>${product.rate !== undefined ? product.rate : "N/A"}</td>
+                            <td>
+                                <button onclick="editProduct(${product.id}, '${product.product}', ${product.rate})">Edit</button>
+                                <button onclick="deleteProduct(${product.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+    }
+
+    // Load products when the page loads
+    fetchProducts();
+</script>
+</body>
+</html>
