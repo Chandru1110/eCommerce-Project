@@ -3,23 +3,21 @@ package com.springh2.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-public class UserPrinicipal implements UserDetails {
+public class UserPrincipal implements UserDetails {
 
     private Users user;
 
-    public UserPrinicipal(Users user) {
+    public UserPrincipal(Users user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return  Collections.singleton(new SimpleGrantedAuthority("USER"));
+        return Collections.singleton(new SimpleGrantedAuthority("USER"));
     }
 
     @Override
@@ -27,9 +25,10 @@ public class UserPrinicipal implements UserDetails {
         return user.getPassword();
     }
 
+    // Fix: Return the actual username from the user object
     @Override
     public String getUsername() {
-        return null;
+        return user.getUsername();
     }
 
     @Override

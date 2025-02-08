@@ -1,6 +1,6 @@
 package com.springh2.service;
 
-import com.springh2.model.UserPrinicipal;
+import com.springh2.model.UserPrincipal;
 import com.springh2.model.Users;
 import com.springh2.repository.sys.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,6 @@ public class MyUserDetailsService implements UserDetailsService {
             System.out.printf("User not found for username : %s", username);
             throw new UsernameNotFoundException("User not found for username : " + username);
         }
-        return new UserPrinicipal(user);
+        return new UserPrincipal(user);
     }
 }

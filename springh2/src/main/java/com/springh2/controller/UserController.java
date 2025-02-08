@@ -25,4 +25,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully");
     }
 
+    @PostMapping("/login")
+    public String Login(@RequestBody Users users)
+    {
+        return userService.verify(users);
+    }
+
 }
